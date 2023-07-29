@@ -1,25 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using Unity.Netcode;
-using static UnityEngine.GraphicsBuffer;
-using UnityEditor.Tilemaps;
-using System.Runtime.CompilerServices;
+
 
 public class PlayerCharacterController : NetworkBehaviour
 {
-    [Header("Character Stats and View Settings")]
+    [Header("Character View Settings")]
     [SerializeField] private GameObject characterSprite;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float characterSpeed;
     [SerializeField] public LineRenderer aimLine;
 
+    [Header("Charcter Stats")]
+    [SerializeField] public int characterHP = 100;
+
     [Header("Character UI Settings")]
-    [SerializeField] private TMP_Text characterHP;
+    [SerializeField] private TMP_Text characterHPDisplay;
     [SerializeField] private TMP_Text characterBullets;
+    [SerializeField] public AudioSource characterAudioSource;
 
     public override void OnNetworkSpawn()
     {
@@ -47,5 +45,11 @@ public class PlayerCharacterController : NetworkBehaviour
         // Draws a line to mouse position
         aimLine.SetPosition(0, characterSprite.transform.position);
         aimLine.SetPosition(1, mainCamera.ScreenToWorldPoint( new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)));
+
+        if (characterHP == 0)
+        {
+            Destroy(this.gameObject);
+        }
     }
+
 }

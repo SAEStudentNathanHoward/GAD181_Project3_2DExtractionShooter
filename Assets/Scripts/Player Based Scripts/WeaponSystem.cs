@@ -20,7 +20,11 @@ public class WeaponSystem : MonoBehaviour
     private float weaponClipSize;
     private float weaponMaxAmmo;
     [HideInInspector] public float weaponBulletSpeed;
+    [HideInInspector] public int weaponBulletDamage;
     [HideInInspector] public float weaponBulletSpread;
+
+    private AudioSource weaponSFXSource;
+    private AudioClip weaponSFXClip;
 
     private void Start()
     {
@@ -29,9 +33,13 @@ public class WeaponSystem : MonoBehaviour
         weaponIsAutomatic = equippedWeapon.GetComponent<GunPrefabSettings>().isAutomatic;
         weaponFireRate = equippedWeapon.GetComponent<GunPrefabSettings>().fireRate;
         weaponClipSize = equippedWeapon.GetComponent<GunPrefabSettings>().clipSize;
+        weaponBulletDamage = equippedWeapon.GetComponent<GunPrefabSettings>().bulletDamage;
         weaponMaxAmmo = equippedWeapon.GetComponent<GunPrefabSettings>().maxAmmo;
         weaponBulletSpeed = equippedWeapon.GetComponent<GunPrefabSettings>().bulletSpeed;
         weaponBulletSpread = equippedWeapon.GetComponent<GunPrefabSettings>().bulletSpread;
+        
+        weaponSFXSource = gameObject.GetComponent<PlayerCharacterController>().characterAudioSource;
+        weaponSFXClip = equippedWeapon.GetComponent<GunPrefabSettings>().weaponFireSFX;
     }
 
     void Update()
@@ -68,7 +76,7 @@ public class WeaponSystem : MonoBehaviour
                 timer = 0;
             }
         }
-        Debug.Log(Time.deltaTime);
+        //Debug.Log(Time.deltaTime);
     }
 
     private void FireGun()
@@ -76,6 +84,8 @@ public class WeaponSystem : MonoBehaviour
         bulletSpawnPosition = new Vector3(transform.position.x, transform.position.y, 0);
         var bullet = Instantiate(projectileBullet, bulletSpawnPosition, Quaternion.identity);
         canFire = false;
+
+        weaponSFXSource.PlayOneShot(weaponSFXClip);
     }
 
     private void ChangeWeapon()
@@ -97,6 +107,9 @@ public class WeaponSystem : MonoBehaviour
         weaponMaxAmmo = equippedWeapon.GetComponent<GunPrefabSettings>().maxAmmo;
         weaponBulletSpeed = equippedWeapon.GetComponent<GunPrefabSettings>().bulletSpeed;
         weaponBulletSpread = equippedWeapon.GetComponent<GunPrefabSettings>().bulletSpread;
+        weaponSFXClip = equippedWeapon.GetComponent<GunPrefabSettings>().weaponFireSFX;
+
+        Debug.Log("current weapon sfx is " + weaponSFXClip);
 
     }
 

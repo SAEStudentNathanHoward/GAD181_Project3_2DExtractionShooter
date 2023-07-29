@@ -12,6 +12,9 @@ public class GunPrefabSettings : MonoBehaviour
     [SerializeField] public float fireRate;
     [SerializeField] public float clipSize;
     [SerializeField] public float maxAmmo;
+    [SerializeField] public int bulletDamage;
     [SerializeField] public float bulletSpeed;
     [SerializeField] public float bulletSpread;
+
+    [SerializeField] public AudioClip weaponFireSFX;
 }

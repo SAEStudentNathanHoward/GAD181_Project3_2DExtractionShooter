@@ -11,6 +11,7 @@ public class Projectile : MonoBehaviour
     public float force;
 
     private float bulletSpread;
+    private int bulletDamage;
 
     private float timer;
 
@@ -22,6 +23,7 @@ public class Projectile : MonoBehaviour
 
         force = GameObject.FindGameObjectWithTag("Player").GetComponent<WeaponSystem>().weaponBulletSpeed;
         bulletSpread = GameObject.FindGameObjectWithTag("Player").GetComponent<WeaponSystem>().weaponBulletSpread;
+        bulletDamage = GameObject.FindGameObjectWithTag("Player").GetComponent<WeaponSystem>().weaponBulletDamage;
 
         Vector3 direction = mousePos - transform.position;
         rb.velocity = new Vector2(Random.Range(direction.x - bulletSpread, direction.x + bulletSpread), Random.Range(direction.y - bulletSpread, direction.y + bulletSpread)).normalized * force;
@@ -34,5 +36,15 @@ public class Projectile : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerCharacterController>().characterHP -= bulletDamage;
+        }
+
+        Destroy(this.gameObject);
     }
 }
