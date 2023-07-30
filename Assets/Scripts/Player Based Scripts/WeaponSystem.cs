@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class WeaponSystem : MonoBehaviour
+public class WeaponSystem : NetworkBehaviour
 {
     [Header("Weapon Settings")]
     [SerializeField] private List<GameObject> weaponList;
@@ -26,6 +28,14 @@ public class WeaponSystem : MonoBehaviour
     private AudioSource weaponSFXSource;
     private AudioClip weaponSFXClip;
 
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            enabled = false;
+        }
+    }
+
     private void Start()
     {
         equippedWeapon = weaponList[0];
@@ -44,27 +54,30 @@ public class WeaponSystem : MonoBehaviour
 
     void Update()
     {
-        // Checks if the left mouse button is clicked
-        if (Input.GetMouseButtonDown(0) && canFire == true)
+        if (MainMenu.localMulitplayer == false)
         {
-            FireGun();
-        }
+            // Checks if the left mouse button is clicked
+            if (Input.GetMouseButtonDown(0) && canFire == true)
+            {
+                FireGun();
+            }
 
-        if (Input.GetMouseButton(0) && weaponIsAutomatic == true && canFire == true)
-        {
-            FireGun();
-        }
+            if (Input.GetMouseButton(0) && weaponIsAutomatic == true && canFire == true)
+            {
+                FireGun();
+            }
 
-        // Checks if the scroll wheel is used
-        if (Input.mouseScrollDelta.y != 0)
-        {
-            ChangeWeapon();
-        }
+            // Checks if the scroll wheel is used
+            if (Input.mouseScrollDelta.y != 0)
+            {
+                ChangeWeapon();
+            }
 
-        // Checks if the r key is pressed on the keyboard
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            ReloadWeapon();
+            // Checks if the r key is pressed on the keyboard
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ReloadWeapon();
+            }
         }
 
         if (canFire == false)
@@ -76,12 +89,11 @@ public class WeaponSystem : MonoBehaviour
                 timer = 0;
             }
         }
-        //Debug.Log(Time.deltaTime);
     }
 
     private void FireGun()
     {
-        bulletSpawnPosition = new Vector3(transform.position.x, transform.position.y, 0);
+        bulletSpawnPosition = bulletTransform.position;
         var bullet = Instantiate(projectileBullet, bulletSpawnPosition, Quaternion.identity);
         canFire = false;
 
@@ -117,4 +129,10 @@ public class WeaponSystem : MonoBehaviour
     {
         Debug.Log("Weapon reloading");
     }
+
+    public void OnFireGun(InputAction.CallbackContext ctx) => FireGun();
+
+    public void OnReloadWeapon(InputAction.CallbackContext ctx) => ReloadWeapon();
+
+    public void OnSwapWeapon(InputAction.CallbackContext ctx) => ChangeWeapon();
 }

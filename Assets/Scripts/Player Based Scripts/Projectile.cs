@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : NetworkBehaviour
 {
     private Vector3 mousePos;
     private Camera mainCam;
@@ -15,6 +16,8 @@ public class Projectile : MonoBehaviour
 
     private float timer;
 
+    private Transform characterSprite;
+
     void Start()
     { 
         mainCam = GameObject.FindGameObjectWithTag("Player").GetComponent<Camera>();
@@ -25,8 +28,20 @@ public class Projectile : MonoBehaviour
         bulletSpread = GameObject.FindGameObjectWithTag("Player").GetComponent<WeaponSystem>().weaponBulletSpread;
         bulletDamage = GameObject.FindGameObjectWithTag("Player").GetComponent<WeaponSystem>().weaponBulletDamage;
 
-        Vector3 direction = mousePos - transform.position;
-        rb.velocity = new Vector2(Random.Range(direction.x - bulletSpread, direction.x + bulletSpread), Random.Range(direction.y - bulletSpread, direction.y + bulletSpread)).normalized * force;
+        if (MainMenu.localMulitplayer == false)
+        {
+            Vector3 direction = mousePos - transform.position;
+            rb.velocity = new Vector2(Random.Range(direction.x - bulletSpread, direction.x + bulletSpread), Random.Range(direction.y - bulletSpread, direction.y + bulletSpread)).normalized * force;
+        }
+        else
+        {
+            characterSprite = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<SpriteRenderer>().transform;
+            Vector2 direction = new Vector2(characterSprite.transform.up.x, characterSprite.transform.up.y);
+            rb.velocity = new Vector2(Random.Range(direction.x - bulletSpread, direction.x + bulletSpread), Random.Range(direction.y - bulletSpread, direction.y + bulletSpread)).normalized * force;
+
+            Debug.Log(characterSprite.transform.forward);
+        }
+
     }
 
     private void Update()
@@ -38,7 +53,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Player"))
         {

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GunPrefabSettings : MonoBehaviour
+public class GunPrefabSettings : NetworkBehaviour
 {
     [Header("Basic Weapon Settings")]
     [SerializeField] public string weaponName;
@@ -17,4 +18,12 @@ public class GunPrefabSettings : MonoBehaviour
     [SerializeField] public float bulletSpread;
 
     [SerializeField] public AudioClip weaponFireSFX;
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            enabled = false;
+        }
+    }
 }
