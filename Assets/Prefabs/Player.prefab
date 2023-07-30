@@ -1045,7 +1045,7 @@ MonoBehaviour:
   m_DefaultControlScheme: 
   m_DefaultActionMap: GameControls
   m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 2014278050219859704}
 --- !u!81 &2923008359497919380
 AudioListener:
   m_ObjectHideFlags: 0
