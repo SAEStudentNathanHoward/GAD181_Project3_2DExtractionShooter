@@ -49,6 +49,7 @@ MonoBehaviour:
   fireRate: 0.1
   clipSize: 50
   maxAmmo: 500
+  bulletDamage: 2
   bulletSpeed: 10
   bulletSpread: 0.5
   weaponFireSFX: {fileID: 8300000, guid: 2a3eb732fb1fe924eb2afd91221c963f, type: 3}

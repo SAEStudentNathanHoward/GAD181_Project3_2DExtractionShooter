@@ -57,12 +57,12 @@ public class WeaponSystem : NetworkBehaviour
         if (MainMenu.localMulitplayer == false)
         {
             // Checks if the left mouse button is clicked
-            if (Input.GetMouseButtonDown(0) && canFire == true)
+            if (Input.GetMouseButtonDown(0))
             {
                 FireGun();
             }
 
-            if (Input.GetMouseButton(0) && weaponIsAutomatic == true && canFire == true)
+            if (Input.GetMouseButton(0) && weaponIsAutomatic == true)
             {
                 FireGun();
             }
@@ -93,11 +93,14 @@ public class WeaponSystem : NetworkBehaviour
 
     private void FireGun()
     {
-        bulletSpawnPosition = bulletTransform.position;
-        var bullet = Instantiate(projectileBullet, bulletSpawnPosition, Quaternion.identity);
-        canFire = false;
+        if (canFire == true)
+        {
+            bulletSpawnPosition = bulletTransform.position;
+            var bullet = Instantiate(projectileBullet, bulletSpawnPosition, Quaternion.identity);
+            canFire = false;
 
-        weaponSFXSource.PlayOneShot(weaponSFXClip);
+            weaponSFXSource.PlayOneShot(weaponSFXClip);
+        }
     }
 
     private void ChangeWeapon()
